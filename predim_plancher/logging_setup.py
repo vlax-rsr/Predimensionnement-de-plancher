@@ -7,6 +7,7 @@ git : les journaux ne sont jamais poussés sur GitHub.
 
 import logging
 import os
+import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
@@ -26,10 +27,16 @@ _LOG_DATEFMT = "%Y-%m-%d %H:%M:%S"
 
 
 def _log_directory() -> Path:
-    """Dossier des journaux (surchargé par la variable ``PREDIM_LOG_DIR``)."""
+    """Dossier des journaux.
+
+    Priorité : variable ``PREDIM_LOG_DIR`` > exécutable gelé (à côté du
+    ``.exe``) > dossier courant.
+    """
     env = os.environ.get("PREDIM_LOG_DIR")
     if env:
         return Path(env)
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent / LOG_DIR_NAME
     return Path.cwd() / LOG_DIR_NAME
 
 
@@ -52,10 +59,12 @@ def setup_logging() -> logging.Logger:
     logger.propagate = False
     formatter = logging.Formatter(_LOG_FORMAT, datefmt=_LOG_DATEFMT)
 
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    console.setFormatter(formatter)
-    logger.addHandler(console)
+    # Console uniquement si un flux est disponible (indisponible en .exe fenêtré).
+    if sys.stderr is not None:
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        console.setFormatter(formatter)
+        logger.addHandler(console)
 
     try:
         dossier = _log_directory()
