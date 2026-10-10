@@ -11,6 +11,8 @@ env/
 # Build / distribution
 build/
 dist/
+*.spec
+*.manifest
 *.egg-info/
 .eggs/
 
@@ -19,8 +21,8 @@ dist/
 .coverage
 htmlcov/
 
-# Scripts de génération (aperçus, captures) — non versionnés
-scripts/
+# Générateur d'aperçu (outil local) — non versionné
+scripts/generate_apercu.py
 
 # Fichiers journaux de l'application — non versionnés
 logs/

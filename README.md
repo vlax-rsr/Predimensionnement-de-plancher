@@ -53,6 +53,26 @@ predim-plancher
 Le panneau repliable **Formules de prédimensionnement utilisées** rappelle les
 formules appliquées.
 
+## Générer un exécutable (Windows)
+
+Un script construit un binaire autonome (`.exe`) avec PyInstaller :
+
+```bash
+pip install pyinstaller
+python scripts/build_exe.py
+```
+
+L'exécutable est produit dans `dist/`. Les fichiers intermédiaires (`build/`,
+`*.spec`, icône générée) restent locaux et ne sont pas versionnés.
+
+## Journalisation
+
+L'application journalise chaque calcul et chaque interaction dans
+`logs/predim.log` (rotation automatique, console en plus de l'application
+lancée depuis un terminal). Le dossier `logs/` n'est pas versionné ; à côté de
+l'exécutable lorsqu'elle est empaquetée, ou surchargeable via la variable
+d'environnement `PREDIM_LOG_DIR`.
+
 ## Méthode de prédimensionnement
 
 Avec `lx` la plus petite portée et `α = lx / ly` :
